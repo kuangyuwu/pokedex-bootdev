@@ -10,6 +10,7 @@ import (
 func startCli() {
 	fmt.Println("-------------- Welcome to Pokedex!! ---------------")
 	scanner := bufio.NewScanner(os.Stdin)
+
 	for {
 		fmt.Print("pokedex > ")
 		scanner.Scan()
@@ -23,7 +24,10 @@ func startCli() {
 		commandName := words[0]
 		command, ok := getCommands()[commandName]
 		if ok {
-			command.callback()
+			err := command.callback()
+			if err != nil {
+				fmt.Println("error:", err)
+			}
 		} else {
 			fmt.Println("pokedex: command not found: " + commandName)
 		}
@@ -43,15 +47,25 @@ type cliCommand struct {
 
 func getCommands() map[string]cliCommand {
 	return map[string]cliCommand{
+		"exit": {
+			name:        "exit",
+			description: "exit the pokedex",
+			callback:    commandExit,
+		},
 		"help": {
 			name:        "help",
 			description: "display a help message",
 			callback:    commandHelp,
 		},
-		"exit": {
-			name:        "exit",
-			description: "exit the pokedex",
-			callback:    commandExit,
+		"map": {
+			name:        "map",
+			description: " display the next 20 locations",
+			callback:    commandMap,
+		},
+		"mapb": {
+			name:        "mapb",
+			description: "display the previous 20 locations",
+			callback:    commandMapB,
 		},
 	}
 }
