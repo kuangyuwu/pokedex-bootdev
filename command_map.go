@@ -4,14 +4,14 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/kuangyuwu/pokedex-bootdev/internal"
+	"github.com/kuangyuwu/pokedex-bootdev/internal/pokeapi"
 )
 
 func commandMap(s *Status) error {
 	if s.nextLocAreaUrl == nil {
 		return errors.New("invalid command - already on the last page")
 	}
-	page, err := internal.GetPage(*s.nextLocAreaUrl)
+	page, err := pokeapi.GetPage(s.client, *s.nextLocAreaUrl)
 	if err != nil {
 		return nil
 	}
@@ -27,7 +27,7 @@ func commandMapB(s *Status) error {
 	if s.prevLocAreaUrl == nil {
 		return errors.New("invalid command - already on the first page")
 	}
-	page, err := internal.GetPage(*s.prevLocAreaUrl)
+	page, err := pokeapi.GetPage(s.client, *s.prevLocAreaUrl)
 	if err != nil {
 		return nil
 	}

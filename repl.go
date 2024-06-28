@@ -5,9 +5,12 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/kuangyuwu/pokedex-bootdev/internal/pokeapi"
 )
 
 type Status struct {
+	client         *pokeapi.Client
 	nextLocAreaUrl *string
 	prevLocAreaUrl *string
 }
@@ -15,6 +18,7 @@ type Status struct {
 func startCli() {
 	var LocAreaP1 string = "https://pokeapi.co/api/v2/location-area/"
 	status := Status{
+		client:         pokeapi.NewClient(),
 		nextLocAreaUrl: &LocAreaP1,
 		prevLocAreaUrl: nil,
 	}
