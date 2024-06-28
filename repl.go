@@ -7,10 +7,19 @@ import (
 	"strings"
 )
 
+type Status struct {
+	nextLocAreaUrl *string
+	prevLocAreaUrl *string
+}
+
 func startCli() {
+	var LocAreaP1 string = "https://pokeapi.co/api/v2/location-area/"
+	status := Status{
+		nextLocAreaUrl: &LocAreaP1,
+		prevLocAreaUrl: nil,
+	}
 	fmt.Println("-------------- Welcome to Pokedex!! ---------------")
 	scanner := bufio.NewScanner(os.Stdin)
-
 	for {
 		fmt.Print("pokedex > ")
 		scanner.Scan()
@@ -24,9 +33,9 @@ func startCli() {
 		commandName := words[0]
 		command, ok := getCommands()[commandName]
 		if ok {
-			err := command.callback()
+			err := command.callback(&status)
 			if err != nil {
-				fmt.Println("error:", err)
+				fmt.Println("pokedex:", err)
 			}
 		} else {
 			fmt.Println("pokedex: command not found: " + commandName)
@@ -42,7 +51,7 @@ func tokenToWords(token string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(*Status) error
 }
 
 func getCommands() map[string]cliCommand {
