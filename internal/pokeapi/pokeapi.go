@@ -5,9 +5,14 @@ import (
 	"io"
 	"net/http"
 	"time"
+
+	"github.com/kuangyuwu/pokedex-bootdev/internal/pokecache"
 )
 
-type Client = http.Client
+type PokeApiClient struct {
+	client *http.Client
+	cache  *pokecache.Cache
+}
 
 type Page struct {
 	Next    *string `json:"next"`
@@ -26,28 +31,38 @@ var LocationAreaPage = Page{
 	Results: nil,
 }
 
-func NewClient() *Client {
-	client := new(Client)
-	client.Timeout = 5 * time.Second
-	return client
+func NewPokeApiClient(timeout, interval time.Duration) *PokeApiClient {
+	pokeApiClient := PokeApiClient{
+		client: &http.Client{
+			Timeout: timeout,
+		},
+		cache: pokecache.NewCache(interval),
+	}
+	return &pokeApiClient
 }
 
-func GetPage(c *Client, url string) (*Page, error) {
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
+func GetPage(p *PokeApiClient, url string) (*Page, error) {
+	var body []byte
+	if val, ok := p.cache.Get(url); ok {
+		body = val
+	} else {
+		req, err := http.NewRequest("GET", url, nil)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := p.client.Do(req)
+		if err != nil {
+			return nil, err
+		}
+		body, err = io.ReadAll(resp.Body)
+		defer resp.Body.Close()
+		if err != nil {
+			return nil, err
+		}
 	}
-	resp, err := c.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	body, err := io.ReadAll(resp.Body)
-	defer resp.Body.Close()
-	if err != nil {
-		return nil, err
-	}
+
 	var result Page
-	err = json.Unmarshal(body, &result)
+	err := json.Unmarshal(body, &result)
 	if err != nil {
 		return nil, err
 	}

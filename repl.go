@@ -5,20 +5,23 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/kuangyuwu/pokedex-bootdev/internal/pokeapi"
 )
 
 type Status struct {
-	client         *pokeapi.Client
+	pokeApiClient  *pokeapi.PokeApiClient
 	nextLocAreaUrl *string
 	prevLocAreaUrl *string
 }
 
 func startCli() {
+	timeout := 5 * time.Second
+	interval := 5 * time.Minute
 	var LocAreaP1 string = "https://pokeapi.co/api/v2/location-area/"
 	status := Status{
-		client:         pokeapi.NewClient(),
+		pokeApiClient:  pokeapi.NewPokeApiClient(timeout, interval),
 		nextLocAreaUrl: &LocAreaP1,
 		prevLocAreaUrl: nil,
 	}

@@ -1,0 +1,1 @@
+cd internal/pokeapi && go build && cd ../pokecache && go build && cd ../.. && go build && ./pokedex-bootdev
