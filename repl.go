@@ -14,16 +14,20 @@ type Status struct {
 	pokeApiClient  *pokeapi.PokeApiClient
 	nextLocAreaUrl *string
 	prevLocAreaUrl *string
+	currLocAreas   map[string]string
+	extraArgs      []string
 }
 
 func startCli() {
 	timeout := 5 * time.Second
 	interval := 5 * time.Minute
-	var LocAreaP1 string = "https://pokeapi.co/api/v2/location-area/"
+	var LocAreaP1 string = "https://pokeapi.co/api/v2/location-area/?limit=10"
 	status := Status{
 		pokeApiClient:  pokeapi.NewPokeApiClient(timeout, interval),
 		nextLocAreaUrl: &LocAreaP1,
 		prevLocAreaUrl: nil,
+		currLocAreas:   make(map[string]string),
+		extraArgs:      nil,
 	}
 	fmt.Println("-------------- Welcome to Pokedex!! ---------------")
 	scanner := bufio.NewScanner(os.Stdin)
@@ -38,6 +42,11 @@ func startCli() {
 		}
 
 		commandName := words[0]
+		if len(words) > 1 {
+			status.extraArgs = words[1:]
+		} else {
+			status.extraArgs = nil
+		}
 		command, ok := getCommands()[commandName]
 		if ok {
 			err := command.callback(&status)
@@ -65,22 +74,27 @@ func getCommands() map[string]cliCommand {
 	return map[string]cliCommand{
 		"exit": {
 			name:        "exit",
-			description: "exit the pokedex",
+			description: "   exit the pokedex",
 			callback:    commandExit,
+		},
+		"explore": {
+			name:        "explore",
+			description: "[+loc area] explore a location area",
+			callback:    commandExplore,
 		},
 		"help": {
 			name:        "help",
-			description: "display a help message",
+			description: "   display a help message",
 			callback:    commandHelp,
 		},
 		"map": {
 			name:        "map",
-			description: " display the next 20 locations",
+			description: "    display the next 10 locations",
 			callback:    commandMap,
 		},
 		"mapb": {
 			name:        "mapb",
-			description: "display the previous 20 locations",
+			description: "   display the previous 10 locations",
 			callback:    commandMapB,
 		},
 	}

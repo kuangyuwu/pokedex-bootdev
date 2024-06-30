@@ -23,14 +23,6 @@ type Page struct {
 	} `json:"results"`
 }
 
-var LocationAreaPage1 string = "https://pokeapi.co/api/v2/location-area/"
-
-var LocationAreaPage = Page{
-	Next:    &LocationAreaPage1,
-	Prev:    nil,
-	Results: nil,
-}
-
 func NewPokeApiClient(timeout, interval time.Duration) *PokeApiClient {
 	pokeApiClient := PokeApiClient{
 		client: &http.Client{
@@ -62,6 +54,43 @@ func GetPage(p *PokeApiClient, url string) (*Page, error) {
 	}
 
 	var result Page
+	err := json.Unmarshal(body, &result)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+type LocArea struct {
+	PkmEncs []struct {
+		Pkm struct {
+			Name string `json:"name"`
+			Url  string `json:"url"`
+		} `json:"pokemon"`
+	} `json:"pokemon_encounters"`
+}
+
+func GetLocArea(p *PokeApiClient, url string) (*LocArea, error) {
+	var body []byte
+	if val, ok := p.cache.Get(url); ok {
+		body = val
+	} else {
+		req, err := http.NewRequest("GET", url, nil)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := p.client.Do(req)
+		if err != nil {
+			return nil, err
+		}
+		body, err = io.ReadAll(resp.Body)
+		defer resp.Body.Close()
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	var result LocArea
 	err := json.Unmarshal(body, &result)
 	if err != nil {
 		return nil, err

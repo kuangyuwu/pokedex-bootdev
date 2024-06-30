@@ -16,6 +16,7 @@ func commandMap(s *Status) error {
 		return nil
 	}
 	for _, item := range page.Results {
+		s.currLocAreas[item.Name] = item.Url
 		fmt.Println(item.Name)
 	}
 	s.nextLocAreaUrl = page.Next
@@ -32,6 +33,7 @@ func commandMapB(s *Status) error {
 		return nil
 	}
 	for _, item := range page.Results {
+		s.currLocAreas[item.Name] = item.Url
 		fmt.Println(item.Name)
 	}
 	s.nextLocAreaUrl = page.Next
