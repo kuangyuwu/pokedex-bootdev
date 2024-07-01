@@ -8,6 +8,9 @@ import (
 )
 
 func commandMap(s *Status) error {
+	if s.extraArgs != nil {
+		return errors.New("incorrect number of arg: expect 0")
+	}
 	if s.nextLocAreaUrl == nil {
 		return errors.New("invalid command - already on the last page")
 	}
@@ -31,6 +34,9 @@ func commandMap(s *Status) error {
 }
 
 func commandMapB(s *Status) error {
+	if s.extraArgs != nil {
+		return errors.New("incorrect number of arg: expect 0")
+	}
 	if s.prevLocAreaUrl == nil {
 		return errors.New("invalid command - already on the first page")
 	}
