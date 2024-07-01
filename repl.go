@@ -17,7 +17,7 @@ type Status struct {
 	prevLocAreaUrl *string
 	currLocAreas   map[string]string
 	currPkms       map[string]string
-	pkmOwned       map[string]*pokeapi.Pokemon
+	pkmCaught      map[string]*pokeapi.Pokemon
 	extraArgs      []string
 }
 
@@ -31,7 +31,7 @@ func startCli() {
 		prevLocAreaUrl: nil,
 		currLocAreas:   make(map[string]string),
 		currPkms:       make(map[string]string),
-		pkmOwned:       make(map[string]*pokeapi.Pokemon),
+		pkmCaught:      make(map[string]*pokeapi.Pokemon),
 		extraArgs:      nil,
 	}
 	fmt.Println("-------------- Welcome to Pokedex!! ---------------")
@@ -98,6 +98,11 @@ func getCommands() map[string]cliCommand {
 			description: "   display a help message",
 			callback:    commandHelp,
 		},
+		"inspect": {
+			name:        "inspect",
+			description: "[+pokemon] inspect a caught pokemon",
+			callback:    commandInspect,
+		},
 		"map": {
 			name:        "map",
 			description: "    display the next 10 locations",
@@ -107,6 +112,11 @@ func getCommands() map[string]cliCommand {
 			name:        "mapb",
 			description: "   display the previous 10 locations",
 			callback:    commandMapB,
+		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "list out all caught pokemons",
+			callback:    commandPokemon,
 		},
 	}
 }

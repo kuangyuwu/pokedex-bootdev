@@ -33,8 +33,9 @@ func commandCatch(s *Status) error {
 	fmt.Println("")
 	if num < pct {
 		fmt.Println("Congrats,", name, "was caught!")
-		if _, ok := s.pkmOwned[name]; !ok {
-			s.pkmOwned[name] = pkm
+		fmt.Println("You may now inspect it with the inspect command.")
+		if _, ok := s.pkmCaught[name]; !ok {
+			s.pkmCaught[name] = pkm
 		}
 	} else {
 		fmt.Println("Oh no,", name, "escaped!")

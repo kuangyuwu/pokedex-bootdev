@@ -183,23 +183,3 @@ func statToI(stat string) (int, error) {
 		return 0, errors.New("invalid stat")
 	}
 }
-
-func iToStat(i int) (string, error) {
-	switch i {
-	case 0:
-		return "hp", nil
-	case 1:
-		return "attack", nil
-	case 2:
-		return "defense", nil
-	case 3:
-		return "special-attack", nil
-	case 4:
-		return "special-defense", nil
-	case 5:
-		return "speed", nil
-	default:
-		return "", errors.New("invalid input: not between 0 and 5")
-	}
-
-}
