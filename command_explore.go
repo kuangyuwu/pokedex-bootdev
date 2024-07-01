@@ -21,7 +21,11 @@ func commandExplore(s *Status) error {
 		return err
 	}
 	fmt.Println("Exploring", name, "...")
+	for key := range s.currPkms {
+		delete(s.currPkms, key)
+	}
 	for _, item := range locArea.PkmEncs {
+		s.currPkms[item.Pkm.Name] = item.Pkm.Url
 		fmt.Println(" -", item.Pkm.Name)
 	}
 	return nil

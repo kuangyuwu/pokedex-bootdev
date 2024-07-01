@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math/rand"
 	"os"
 	"strings"
 	"time"
@@ -15,22 +16,27 @@ type Status struct {
 	nextLocAreaUrl *string
 	prevLocAreaUrl *string
 	currLocAreas   map[string]string
+	currPkms       map[string]string
+	pkmOwned       map[string]*pokeapi.Pokemon
 	extraArgs      []string
 }
 
 func startCli() {
 	timeout := 5 * time.Second
 	interval := 5 * time.Minute
-	var LocAreaP1 string = "https://pokeapi.co/api/v2/location-area/?limit=10"
+	var LocAreaP1 string = "https://pokeapi.co/api/v2/location-area/?offset=0&limit=10"
 	status := Status{
 		pokeApiClient:  pokeapi.NewPokeApiClient(timeout, interval),
 		nextLocAreaUrl: &LocAreaP1,
 		prevLocAreaUrl: nil,
 		currLocAreas:   make(map[string]string),
+		currPkms:       make(map[string]string),
+		pkmOwned:       make(map[string]*pokeapi.Pokemon),
 		extraArgs:      nil,
 	}
 	fmt.Println("-------------- Welcome to Pokedex!! ---------------")
 	scanner := bufio.NewScanner(os.Stdin)
+	rand.Seed(time.Now().UnixNano())
 	for {
 		fmt.Print("pokedex > ")
 		scanner.Scan()
@@ -72,6 +78,11 @@ type cliCommand struct {
 
 func getCommands() map[string]cliCommand {
 	return map[string]cliCommand{
+		"catch": {
+			name:        "catch",
+			description: "  [+pokemon] throw a pokeball to the pokemon",
+			callback:    commandCatch,
+		},
 		"exit": {
 			name:        "exit",
 			description: "   exit the pokedex",
