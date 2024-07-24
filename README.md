@@ -6,5 +6,5 @@ This is the fifth guided project on [boot.dev](https://www.boot.dev/).
 
 The following is excerpted from the [course introduction](https://www.boot.dev/courses/build-pokedex-cli).
 
-> In this guided project you'll practice building a RESTful API in Go, and you'll use production-ready database tools like PostgreSQL, SQLc, Goose, and pgAdmin. This won't just be another CRUD app, but a service that has a long-running service worker that reaches out over the internet to fetch data from remote locations.
+> A REPL, or Read-Eval-Print Loop, is a simple interactive programming environment that takes user input, evaluates it, and returns the result to the user. In this guided project, you'll build a Pokedex-like REPL in Go that uses the PokeAPI to fetch data about Pokemon. It's a great way to put your Go knowledge to the test and learn valuable skills like HTTP networking and data serialization.
 
